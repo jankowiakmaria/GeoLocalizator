@@ -1,0 +1,31 @@
+﻿@model int
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div data-bind="text: longitude"></div>
+<div data-bind="text: latitude"></div>
+<button class="btn btn-danger" data-bind="click: Clear">Clear <span class="glyphicon glyphicon-fire"></span></button>
+<div class="panel panel-success">
+    <div class="panel-heading">Panel heading with title</div>
+    <div class="panel-body" id="paper"></div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/Scripts/cokolwiek.js")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var paper = Raphael("paper", 500, 500);
+            var vm = new Localizer(paper, '@Model', '@Url.Action("Position", "Home")', '@Url.Action("Clear", "Home")');
+            ko.applyBindings(vm);
+
+            var timeout = 5000;
+            var refreshThread = function () {
+                vm.RefreshPosition();
+                setTimeout(refreshThread, timeout);
+            };
+            refreshThread();
+        });
+
+    </script>
+}
